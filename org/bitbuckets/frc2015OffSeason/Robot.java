@@ -3,6 +3,7 @@ package org.bitbuckets.frc2015OffSeason;
 
 import org.bitbuckets.frc2015OffSeason.subsystems.Grabby;
 import org.bitbuckets.frc2015OffSeason.subsystems.Tilty;
+import org.bitbuckets.frc2015OffSeason.subsystems.state.Winchy;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -18,9 +19,10 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
  */
 public class Robot extends IterativeRobot {
 
-	public static OI oi;
-	public static Tilty tilty;
-	public static Grabby grabby;
+	public OI oi;
+	public Tilty tilty = new Tilty("Tilty", 50);
+	public Grabby grabby = new Grabby("Grabby", 30);
+	public Winchy winchy = new Winchy("Winchy", 20);
 
     Command autonomousCommand;
 
@@ -30,12 +32,10 @@ public class Robot extends IterativeRobot {
      */
     public void robotInit() {
 		oi = new OI();
-		
-		tilty = new Tilty("Tilty", 50);
-		grabby = new Grabby("Grabby", 30);
-		
+
 		tilty.start();
 		grabby.start();
+		winchy.start();
     }
 	
 
