@@ -1,4 +1,4 @@
-package org.bitbuckets.frc2015OffSeason.subsystems.state;
+package org.bitbuckets.frc2015OffSeason.subsystems;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -7,7 +7,8 @@ import java.util.function.Consumer;
 import org.bitbuckets.frc2015OffSeason.RobotConstants;
 import org.bitbuckets.frc2015OffSeason.RobotMap;
 import org.bitbuckets.frc2015OffSeason.commands.DynamicCommand;
-import org.bitbuckets.frc2015OffSeason.subsystems.StateSubsystem;
+import org.bitbuckets.frc2015OffSeason.subsystems.state.State;
+import org.bitbuckets.frc2015OffSeason.subsystems.state.ValueTracker;
 import org.bitbuckets.frc2015OffSeason.triggers.SubsystemTrigger;
 
 import edu.wpi.first.wpilibj.CANTalon;
