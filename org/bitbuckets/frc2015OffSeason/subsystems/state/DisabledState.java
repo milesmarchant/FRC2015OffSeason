@@ -4,8 +4,18 @@ import org.bitbuckets.frc2015OffSeason.subsystems.StateSubsystem;
 
 public class DisabledState extends State<StateSubsystem>{
 
+
 	@Override
-	public void execute(StateSubsystem context) {		
+	public void enter() {
+	}
+
+
+	@Override
+	public void execute() {		
+	}
+	
+	@Override
+	public void leave() {
 	}
 	
 	

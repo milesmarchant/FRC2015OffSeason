@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.bitbuckets.frc2015OffSeason.RobotMap;
 import org.bitbuckets.frc2015OffSeason.subsystems.state.State;
+import org.bitbuckets.frc2015OffSeason.subsystems.state.ValueTracker;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Talon;
@@ -19,13 +20,17 @@ public class Grabby extends StateSubsystem{
 
 	public Grabby(String name, long iterationTime) {
 		super(name, iterationTime);
+	}
+
+
+	@Override
+	protected void setupComponents() {
         grabberController = new Talon(RobotMap.GRABBY_GRABBER);
         open = new DigitalInput(RobotMap.GRABBY_OPEN);
 	}
 
 	@Override
-	protected void init() {
-		
+	protected void setupTriggers() {
 	}
 
 	@Override
@@ -68,26 +73,38 @@ public class Grabby extends StateSubsystem{
 	}
 	
 	private Double getSpeed(){
-		return speed.poll();
+		return this.speed.poll();
 	}
 	
 	public static class Grab extends State<Grabby>{
 		
-		double oldSpeed = 0.0;
-		Double newSpeed = 0.0;
+		ValueTracker<Double> speed;
+		
+		public Grab(){
+			name = "Grab";
+		}
+		
+		@Override
+		protected void createValueTrackers(){
+			speed = new ValueTracker<Double>(context::getSpeed);
+		}
+		
+		@Override
+		public void enter() {
+		}
 
 		@Override
-		public void execute(Grabby context) {
-			newSpeed = context.getSpeed();
-			if(newSpeed == null){
-				context.grabberController.set(oldSpeed);
-			} else{
-				oldSpeed = newSpeed;
-				//feed in oldSpeed to reduce unboxing
-				context.grabberController.set(oldSpeed);
-			}
+		public void execute() {
+			context.grabberController.set(speed.getValue());
+		}
+
+
+
+		@Override
+		public void leave() {
 		}
 		
 	}
+
 
 }

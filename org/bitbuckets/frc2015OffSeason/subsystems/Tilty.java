@@ -1,6 +1,7 @@
 package org.bitbuckets.frc2015OffSeason.subsystems;
 
 import org.bitbuckets.frc2015OffSeason.RobotMap;
+import org.bitbuckets.frc2015OffSeason.subsystems.state.DisabledState;
 import org.bitbuckets.frc2015OffSeason.subsystems.state.State;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -12,13 +13,18 @@ public class Tilty extends StateSubsystem{
 
 	public Tilty(String name, long iterationTime) {
 		super(name, iterationTime);
-		//FIXME numbers are wrong
+	}
+	
+	@Override
+	protected void setupComponents() {
         tiltSolenoid = new DoubleSolenoid(RobotMap.TILTY_SOLENOID_1, RobotMap.TILTY_SOLENOID_2);
 	}
-
+	
 	@Override
-	protected void init() {
+	protected void setupTriggers() {
 	}
+	
+	
 	
 	
 	@Override
@@ -55,16 +61,23 @@ public class Tilty extends StateSubsystem{
     	
     	public Tilt(boolean up){
     		this.up = up;
+    		name = "Tilt";
+    	}
+    	
+    	@Override
+    	public void enter(){
     	}
 
 		@Override
-		public void execute(Tilty context) {
+		public void execute() {
 			context.tiltSolenoid.set(up ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
-			
+			context.setState(new DisabledState());
+		}
+
+		@Override
+		public void leave() {
 		}
     	
     }
-
-
 
 }

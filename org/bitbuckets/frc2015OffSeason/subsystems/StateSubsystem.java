@@ -19,22 +19,30 @@ public abstract class StateSubsystem extends Subsystem implements Runnable {
     public StateSubsystem(String name, long iterationTime){
     	t = new Thread(this, name);
     	if(iterationTime == 0){
-    		this.iterationTime = 10; //TODO find a better way
+    		this.iterationTime = 10; //TODO actually read this value from somewhere?
     	} else{
     		this.iterationTime = iterationTime;
     	}
+    	setupComponents();
+    	setupTriggers();
     }
     
     public void setState(State newState) {
     	if(currState.checkNewState(newState)){
+    		currState.leave();
+    		newState.setContext(this);
     		currState = newState;
+    		currState.enter();
     	}
 	}
+    
+    public final String getCurrentStateName(){
+    	return currState.getName();
+    }
     
     public final void start(){
     	stopRequested = false;
     	stopped = false;
-    	init();
     	if(t != null && t.isAlive() == false){
     		t = new Thread(this, t.getName());
     	}
@@ -49,7 +57,7 @@ public abstract class StateSubsystem extends Subsystem implements Runnable {
     @Override
     public final void run(){
     	while(stopRequested){
-    		currState.execute(this);
+    		currState.execute();
     		try {
 				Thread.sleep(iterationTime);
 			} catch (InterruptedException e) {
@@ -59,7 +67,8 @@ public abstract class StateSubsystem extends Subsystem implements Runnable {
     	stopped = true;
     }
 
-    protected abstract void init();
+    protected abstract void setupComponents();
+    protected abstract void setupTriggers();
     
     //TODO what's the inverse of init()?
     
