@@ -20,9 +20,9 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 public class Robot extends IterativeRobot {
 
 	public OI oi;
-	public Tilty tilty = new Tilty("Tilty", 50);
-	public Grabby grabby = new Grabby("Grabby", 30);
-	public Winchy winchy = new Winchy("Winchy", 20);
+	public Tilty tilty;
+	public Grabby grabby;
+	public Winchy winchy;
 
     Command autonomousCommand;
 
@@ -32,7 +32,12 @@ public class Robot extends IterativeRobot {
      */
     public void robotInit() {
 		oi = new OI();
+		
+		tilty = new Tilty("Tilty", 50);
+		grabby = new Grabby("Grabby", 30);
+		winchy = new Winchy("Winchy", 20);
 
+		//FIXME these need to be moved
 		tilty.start();
 		grabby.start();
 		winchy.start();
