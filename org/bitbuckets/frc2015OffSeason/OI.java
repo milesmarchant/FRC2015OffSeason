@@ -3,6 +3,7 @@ package org.bitbuckets.frc2015OffSeason;
 import org.bitbuckets.frc2015OffSeason.util.Direction;
 import org.bitbuckets.frc2015OffSeason.util.JoystickDirButton;
 import org.bitbuckets.frc2015OffSeason.util.POVHatDirButton;
+import org.bitbuckets.frc2015OffSeason.util.TwoWayButton;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
@@ -72,8 +73,8 @@ public class OI {
     public POVHatDirButton operatorTiltDown = new POVHatDirButton(operator, Direction.DOWN);
 
     //Grabby
-    public Button operatorGrabOpen = new JoystickButton(operator, 5);
-    public Button operatorGrabClose = new JoystickButton(operator, 6);
+    public TwoWayButton operatorGrabOpen = new TwoWayButton(operator, 5);
+    public TwoWayButton operatorGrabClose = new TwoWayButton(operator, 6);
     
     //Winchy
     
