@@ -41,6 +41,9 @@ public class Robot extends IterativeRobot {
 		tilty.start();
 		grabby.start();
 		winchy.start();
+		
+//		oi.operatorGrabClose.setAction(new StateSetter(grabby, Grabby.), onRelease);
+		
     }
 	
 
