@@ -1,12 +1,8 @@
 package org.bitbuckets.frc2015OffSeason.subsystems;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.TimeUnit;
-
 import org.bitbuckets.frc2015OffSeason.RobotConstants;
 import org.bitbuckets.frc2015OffSeason.RobotMap;
 import org.bitbuckets.frc2015OffSeason.subsystems.state.State;
-import org.bitbuckets.frc2015OffSeason.subsystems.state.ValueTracker;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Talon;
