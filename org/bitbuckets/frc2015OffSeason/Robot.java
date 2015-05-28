@@ -4,7 +4,7 @@ package org.bitbuckets.frc2015OffSeason;
 import org.bitbuckets.frc2015OffSeason.commands.StateSetter;
 import org.bitbuckets.frc2015OffSeason.subsystems.Grabby;
 import org.bitbuckets.frc2015OffSeason.subsystems.Tilty;
-import org.bitbuckets.frc2015OffSeason.subsystems.state.Winchy;
+import org.bitbuckets.frc2015OffSeason.subsystems.Winchy;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
