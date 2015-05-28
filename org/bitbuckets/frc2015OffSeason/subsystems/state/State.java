@@ -4,7 +4,6 @@ import org.bitbuckets.frc2015OffSeason.subsystems.StateSubsystem;
 
 public abstract class State<S extends StateSubsystem> {
 	
-	protected State<?>[] disallowedTargets;
 	protected String name;
 	protected S context;
 	
@@ -25,12 +24,7 @@ public abstract class State<S extends StateSubsystem> {
 	
 	public abstract void leave();
 	
-	public final boolean checkNewState(State<?> newState){
-		for(State<?> s: disallowedTargets){
-			if(s.equals(newState)){
-				return false;
-			}
-		}
+	public boolean checkNewState(State<?> newState){
 		return true;
 	}
 	
