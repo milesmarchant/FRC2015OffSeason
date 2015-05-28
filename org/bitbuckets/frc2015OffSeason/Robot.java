@@ -5,6 +5,7 @@ import org.bitbuckets.frc2015OffSeason.commands.StateSetter;
 import org.bitbuckets.frc2015OffSeason.subsystems.Grabby;
 import org.bitbuckets.frc2015OffSeason.subsystems.Tilty;
 import org.bitbuckets.frc2015OffSeason.subsystems.Winchy;
+import org.bitbuckets.frc2015OffSeason.util.AxisSender;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -24,6 +25,8 @@ public class Robot extends IterativeRobot {
 	public Tilty tilty;
 	public Grabby grabby;
 	public Winchy winchy;
+	
+	public Thread winchAxisSender;
 
     Command autonomousCommand;
 
@@ -46,6 +49,13 @@ public class Robot extends IterativeRobot {
 		oi.operatorGrabClose.setAction(new StateSetter(grabby, new Grabby.GrabberClose()), new StateSetter(grabby, new Grabby.GrabbyStop()));
 		oi.operatorGrabOpen.setAction(new StateSetter(grabby, new Grabby.GrabberOpen()), new StateSetter(grabby, new Grabby.GrabbyStop()));
 
+		oi.operatorTiltUp.whenActive(new StateSetter(tilty, new Tilty.Tilt(true)));
+		oi.operatorTiltDown.whenActive(new StateSetter(tilty, new Tilty.Tilt(false)));
+		
+		winchAxisSender = new Thread(new AxisSender(oi.operator::getRawAxis, d -> winchy.setSpeed(d, 100), 10, 3));
+		winchAxisSender.start();
+		
+		
     }
 	
 
