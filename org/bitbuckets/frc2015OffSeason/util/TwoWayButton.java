@@ -19,7 +19,7 @@ public class TwoWayButton extends Button{
         m_buttonNumber = buttonNumber;
     }
 	
-    public void commands(final Command onPress, final Command onRelease){
+    public void setAction(final Command onPress, final Command onRelease){
     	whenPressed(onPress);
     	whenReleased(onRelease);
     }
