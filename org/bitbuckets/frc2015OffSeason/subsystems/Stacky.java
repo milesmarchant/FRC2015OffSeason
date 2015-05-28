@@ -40,14 +40,10 @@ public class Stacky extends StateSubsystem{
 
 	@Override
 	protected void interrupted() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	protected void initDefaultCommand() {
-		// TODO Auto-generated method stub
-		
 	}
 	
 	public boolean getBumpers(){
@@ -58,12 +54,24 @@ public class Stacky extends StateSubsystem{
 
 		@Override
 		public void enter() {
+			//stop the winch
 			context.winch.changeControlMode(ControlMode.Position);
 			context.winch.set(context.winch.get());
 		}
 
 		@Override
 		public void execute() {
+			//if the auto mode button is pressed, go to HoldingAutoMagic state
+			if(context.oi.operatorAutoMode.get() == true){
+				context.setState(new HoldingAutoMagic());
+			} else if(context.oi.operatorToteUp.get()){
+				context.setState(new MoveUpOne());
+			} else if(context.oi.operatorToteDown.get()){
+				context.setState(new MoveDownOne());
+			} else if(context.oi.operatorToteDownAll.get()){
+				context.setState(new MoveDownAll());
+			}
+			//TODO check for axis values
 		}
 
 		@Override
@@ -77,93 +85,190 @@ public class Stacky extends StateSubsystem{
 
 		@Override
 		public void enter() {
+			//stop the winch
 			context.winch.changeControlMode(ControlMode.Position);
 			context.winch.set(context.winch.get());
 		}
 
 		@Override
 		public void execute() {
-			if(context.getBumpers() == false){
-				context.setState(new MoveAutoMagic(true));
+			//if the auto mode button is not pressed, go to Holding state
+			if(context.oi.operatorAutoMode.get() == false){
+				context.setState(new HoldingAutoMagic());
+			} else if(context.getBumpers() == true){ //if the bumpers are pressed, go to MoveAutoMagic state, going upwards
+				context.setState(new MoveUpOne());
+			} else if(context.oi.operatorToteUp.get()){
+				context.setState(new MoveUpOne());
+			} else if(context.oi.operatorToteDown.get()){
+				context.setState(new MoveDownOne());
+			} else if(context.oi.operatorToteDownAll.get()){
+				context.setState(new MoveDownAll());
+			}
+			//TODO check for axis values
+		}
+
+		@Override
+		public void leave() {
+			
+		}
+		
+	}
+	
+	public static abstract class MovingState extends State<Stacky>{
+		@Override
+		public void enter(){
+			context.winch.changeControlMode(ControlMode.Speed);
+		}
+	}
+	
+	public static class MoveDownOne extends MovingState{
+
+		@Override
+		public void execute() {
+			context.winch.set(-RobotConstants.CARRIAGE_FAST_SPEED);
+			context.setState(new WaitReed());
+		}
+
+		@Override
+		public void leave() {			
+		}
+		
+		@Override
+		public boolean checkNewState(State<?> newState){
+			if(newState instanceof MovingState){
+				return false;
+			}
+			return true;
+		}
+		
+	}
+	
+	public static class MoveUpOne extends MovingState{
+
+		@Override
+		public void execute() {
+			context.winch.set(RobotConstants.CARRIAGE_FAST_SPEED);
+			context.setState(new WaitReed());
+		}
+
+		@Override
+		public void leave() {			
+		}
+		
+		@Override
+		public boolean checkNewState(State<?> newState){
+			if(newState instanceof MovingState){
+				return false;
+			}
+			return true;
+		}
+		
+	}
+	
+	public static class MoveDownAll extends MovingState{
+
+		@Override
+		public void execute() {
+			context.winch.set(-RobotConstants.CARRIAGE_FAST_SPEED);
+			context.setState(new WaitBottom());
+		}
+
+		@Override
+		public void leave() {			
+		}
+		
+		@Override
+		public boolean checkNewState(State<?> newState){
+			if(newState instanceof MovingState){
+				return false;
+			}
+			return true;
+		}
+		
+	}
+	
+	public static class MoveManual extends MovingState{
+
+		@Override
+		public void execute() {
+			context.winch.set(context.oi.operator.getRawAxis(context.oi.operatorStackyWinchAxis));
+			if(context.oi.operatorToteUp.get()){
+				context.setState(new MoveUpOne());
+			} else if(context.oi.operatorToteDown.get()){
+				context.setState(new MoveDownOne());
+			} else if(context.oi.operatorToteDownAll.get()){
+				context.setState(new MoveDownAll());
+			} else if(context.oi.operatorAutoMode.get() && context.getBumpers()){
+				context.setState(new MoveUpOne());
 			}
 		}
 
 		@Override
 		public void leave() {
-			// TODO Auto-generated method stub
-			
-		}
-		
-	}
-	
-	public static class MoveAutoMagic extends State<Stacky>{
-		
-		private boolean direction;
-		
-		public MoveAutoMagic(boolean up){
-			this.direction = direction;
-		}
-
-		@Override
-		public void enter() {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void execute() {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void leave() {
-			// TODO Auto-generated method stub
-			
-		}
-		
-	}
-	
-	public static class MoveManual extends State<Stacky>{
-
-		@Override
-		public void enter() {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void execute() {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void leave() {
-			// TODO Auto-generated method stub
-			
 		}
 		
 	}
 	
 	public static class WaitReed extends State<Stacky>{
+		
+		long timeInit;
 
 		@Override
 		public void enter() {
-			// TODO Auto-generated method stub
-			
+			timeInit = System.currentTimeMillis();
 		}
 
 		@Override
 		public void execute() {
-			// TODO Auto-generated method stub
-			
+			//TODO check reed switch
+			if((System.currentTimeMillis() - timeInit) > RobotConstants.STACK_DOWN_ONE_TIMEOUT){
+				context.setState(new Holding());
+			}
 		}
 
 		@Override
 		public void leave() {
-			// TODO Auto-generated method stub
 			
+		}
+		
+		@Override
+		public boolean checkNewState(State<?> newState){
+			if(newState instanceof MovingState){
+				return false;
+			}
+			return true;
+		}
+		
+	}
+	
+	public static class WaitBottom extends State<Stacky>{
+		
+		long timeInit;
+
+		@Override
+		public void enter() {
+			timeInit = System.currentTimeMillis();
+		}
+
+		@Override
+		public void execute() {
+			//TODO check which limit switch it should be
+			if(context.winch.isRevLimitSwitchClosed() || (System.currentTimeMillis() - timeInit) > RobotConstants.STACK_DOWN_ALL_TIMEOUT){
+				context.setState(new Holding());
+			}
+		}
+
+		@Override
+		public void leave() {
+			
+		}
+		
+		@Override
+		public boolean checkNewState(State<?> newState){
+			if(newState instanceof MovingState){
+				return false;
+			}
+			return true;
 		}
 		
 	}
