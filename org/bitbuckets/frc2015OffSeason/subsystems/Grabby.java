@@ -3,6 +3,7 @@ package org.bitbuckets.frc2015OffSeason.subsystems;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.bitbuckets.frc2015OffSeason.RobotConstants;
 import org.bitbuckets.frc2015OffSeason.RobotMap;
 import org.bitbuckets.frc2015OffSeason.subsystems.state.State;
 import org.bitbuckets.frc2015OffSeason.subsystems.state.ValueTracker;
@@ -16,8 +17,6 @@ public class Grabby extends StateSubsystem{
 	
 	private DigitalInput open;
 	
-	private ArrayBlockingQueue<Double> speed = new ArrayBlockingQueue<Double>(1);
-
 	public Grabby(String name, long iterationTime) {
 		super(name, iterationTime);
 	}
@@ -64,46 +63,71 @@ public class Grabby extends StateSubsystem{
 		return open.get();
 	}
 	
-	public void setSpeed(Double speed, long timeout){
-		try {
-			this.speed.offer(speed, timeout, TimeUnit.MILLISECONDS);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private Double getSpeed(){
-		return this.speed.poll();
-	}
-	
-	public static class Grab extends State<Grabby>{
+	public static class GrabberClose extends State<Grabby>{
 		
-		ValueTracker<Double> speed;
 		
-		public Grab(){
-			name = "Grab";
-		}
-		
-		@Override
-		protected void createValueTrackers(){
-			speed = new ValueTracker<Double>(context::getSpeed);
+		public GrabberClose(){
+			name = "GrabberClose";
 		}
 		
 		@Override
 		public void enter() {
+			context.grabberController.set(RobotConstants.GRAB_SPEED);
 		}
 
+		//TODO check for current limit
 		@Override
 		public void execute() {
-			context.grabberController.set(speed.getValue());
 		}
-
-
 
 		@Override
 		public void leave() {
 		}
 		
+	}
+	
+	public static class GrabberOpen extends State<Grabby>{
+		
+		public GrabberOpen(){
+			name = "GrabberOpen";
+		}
+
+		@Override
+		public void enter() {
+			context.grabberController.set(-RobotConstants.GRAB_SPEED);
+		}
+		
+		//TODO check for open
+		@Override
+		public void execute() {
+		}
+
+		@Override
+		public void leave() {
+			
+		}
+		
+	}
+	
+	public static class GrabbyStop extends State<Grabby>{
+		
+		public GrabbyStop(){
+			name = "GrabberOpen";
+		}
+		
+		@Override
+		public void enter(){
+			context.grabberController.set(0);
+		}
+		
+		@Override
+		public void execute() {
+		}
+
+		@Override
+		public void leave() {
+			
+		}
 	}
 
 
