@@ -91,13 +91,9 @@ public class RobotConstants {
      */
     public static final double STACKY_WINCH_DRUM_CIRCUMFERENCE = 2 * Math.PI / 12;
     /**
-     * Timeout for the StackyUp command, in seconds.
-     */
-    public static final double STACK_UP_TIMEOUT = 4;
-    /**
      * Timeout for the StackyDownOne command, in seconds.
      */
-    public static final double STACK_DOWN_ONE_TIMEOUT = 1.5;
+    public static final double STACK_MOVE_ONE_TIMEOUT = 1.5;
     /**
      * Timeout for the StackyDownAll command, in seconds.
      */

@@ -221,7 +221,7 @@ public class Stacky extends StateSubsystem{
 		@Override
 		public void execute() {
 			//TODO check reed switch
-			if((System.currentTimeMillis() - timeInit) > RobotConstants.STACK_DOWN_ONE_TIMEOUT){
+			if((System.currentTimeMillis() - timeInit) > RobotConstants.STACK_MOVE_ONE_TIMEOUT){
 				context.setState(new Holding());
 			}
 		}
