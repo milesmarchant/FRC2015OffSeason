@@ -1,4 +1,4 @@
-package util;
+package org.bitbuckets.frc2015OffSeason.util;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Trigger;

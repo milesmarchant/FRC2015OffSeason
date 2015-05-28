@@ -1,8 +1,9 @@
 package org.bitbuckets.frc2015OffSeason;
 
-import util.Direction;
-import util.JoystickDirButton;
-import util.POVHatDirButton;
+import org.bitbuckets.frc2015OffSeason.util.Direction;
+import org.bitbuckets.frc2015OffSeason.util.JoystickDirButton;
+import org.bitbuckets.frc2015OffSeason.util.POVHatDirButton;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;

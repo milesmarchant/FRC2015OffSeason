@@ -1,4 +1,4 @@
-package util;
+package org.bitbuckets.frc2015OffSeason.util;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.buttons.Button;
