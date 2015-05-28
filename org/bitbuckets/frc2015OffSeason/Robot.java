@@ -1,6 +1,7 @@
 
 package org.bitbuckets.frc2015OffSeason;
 
+import org.bitbuckets.frc2015OffSeason.commands.StateSetter;
 import org.bitbuckets.frc2015OffSeason.subsystems.Grabby;
 import org.bitbuckets.frc2015OffSeason.subsystems.Tilty;
 import org.bitbuckets.frc2015OffSeason.subsystems.state.Winchy;
@@ -42,8 +43,9 @@ public class Robot extends IterativeRobot {
 		grabby.start();
 		winchy.start();
 		
-//		oi.operatorGrabClose.setAction(new StateSetter(grabby, Grabby.), onRelease);
-		
+		oi.operatorGrabClose.setAction(new StateSetter(grabby, new Grabby.GrabberClose()), new StateSetter(grabby, new Grabby.GrabbyStop()));
+		oi.operatorGrabOpen.setAction(new StateSetter(grabby, new Grabby.GrabberOpen()), new StateSetter(grabby, new Grabby.GrabbyStop()));
+
     }
 	
 
