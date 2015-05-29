@@ -70,15 +70,15 @@ public class Stacky extends StateSubsystem{
 		@Override
 		public void execute() {
 			//if the auto mode button is pressed, go to HoldingAutoMagic state
-			if(context.oi.operatorAutoMode.get() == true){
+			if(context.robot.oi.operatorAutoMode.get() == true){
 				context.setState(new HoldingAutoMagic());
-			} else if(context.oi.operatorToteUp.get()){
+			} else if(context.robot.oi.operatorToteUp.get()){
 				context.setState(new MoveUpOne());
-			} else if(context.oi.operatorToteDown.get()){
+			} else if(context.robot.oi.operatorToteDown.get()){
 				context.setState(new MoveDownOne());
-			} else if(context.oi.operatorToteDownAll.get()){
+			} else if(context.robot.oi.operatorToteDownAll.get()){
 				context.setState(new MoveDownAll());
-			} else if(context.oi.operator.getRawAxis(context.oi.operatorStackyWinchAxis) != 0){
+			} else if(context.robot.oi.operator.getRawAxis(context.robot.oi.operatorStackyWinchAxis) != 0){
 				context.setState(new MoveManual());
 			}
 			
@@ -103,17 +103,17 @@ public class Stacky extends StateSubsystem{
 		@Override
 		public void execute() {
 			//if the auto mode button is not pressed, go to Holding state
-			if(context.oi.operatorAutoMode.get() == false){
+			if(context.robot.oi.operatorAutoMode.get() == false){
 				context.setState(new HoldingAutoMagic());
 			} else if(context.getBumpers() == true){ //if the bumpers are pressed, go to MoveAutoMagic state, going upwards
 				context.setState(new MoveUpOne());
-			} else if(context.oi.operatorToteUp.get()){
+			} else if(context.robot.oi.operatorToteUp.get()){
 				context.setState(new MoveUpOne());
-			} else if(context.oi.operatorToteDown.get()){
+			} else if(context.robot.oi.operatorToteDown.get()){
 				context.setState(new MoveDownOne());
-			} else if(context.oi.operatorToteDownAll.get()){
+			} else if(context.robot.oi.operatorToteDownAll.get()){
 				context.setState(new MoveDownAll());
-			} else if(context.oi.operator.getRawAxis(context.oi.operatorStackyWinchAxis) != 0){
+			} else if(context.robot.oi.operator.getRawAxis(context.robot.oi.operatorStackyWinchAxis) != 0){
 				context.setState(new MoveManual());
 			}
 		}
@@ -202,16 +202,16 @@ public class Stacky extends StateSubsystem{
 
 		@Override
 		public void execute() {
-			context.winch.set(context.oi.operator.getRawAxis(context.oi.operatorStackyWinchAxis));
-			if(context.oi.operatorToteUp.get()){
+			context.winch.set(context.robot.oi.operator.getRawAxis(context.robot.oi.operatorStackyWinchAxis));
+			if(context.robot.oi.operatorToteUp.get()){
 				context.setState(new MoveUpOne());
-			} else if(context.oi.operatorToteDown.get()){
+			} else if(context.robot.oi.operatorToteDown.get()){
 				context.setState(new MoveDownOne());
-			} else if(context.oi.operatorToteDownAll.get()){
+			} else if(context.robot.oi.operatorToteDownAll.get()){
 				context.setState(new MoveDownAll());
-			} else if(context.oi.operatorAutoMode.get() && context.getBumpers()){
+			} else if(context.robot.oi.operatorAutoMode.get() && context.getBumpers()){
 				context.setState(new MoveUpOne());
-			} else if(context.oi.operator.getRawAxis(context.oi.operatorStackyWinchAxis) == 0){
+			} else if(context.robot.oi.operator.getRawAxis(context.robot.oi.operatorStackyWinchAxis) == 0){
 				context.setState(new Holding());
 			}
 		}

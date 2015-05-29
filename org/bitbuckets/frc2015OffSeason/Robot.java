@@ -4,7 +4,6 @@ package org.bitbuckets.frc2015OffSeason;
 import org.bitbuckets.frc2015OffSeason.subsystems.Grabby;
 import org.bitbuckets.frc2015OffSeason.subsystems.Tilty;
 import org.bitbuckets.frc2015OffSeason.subsystems.Winchy;
-import org.bitbuckets.frc2015OffSeason.util.AxisSender;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -25,8 +24,6 @@ public class Robot extends IterativeRobot {
 	public Grabby grabby;
 	public Winchy winchy;
 	
-	public Thread winchAxisSender;
-
     Command autonomousCommand;
 
     /**

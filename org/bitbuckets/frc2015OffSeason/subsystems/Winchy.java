@@ -75,8 +75,8 @@ public class Winchy extends StateSubsystem{
 		
 		@Override
 		public void execute() {
-			context.winchController.set(context.oi.operator.getRawAxis(context.oi.operatorStackyWinchAxis));
-			if(context.oi.operator.getRawAxis(context.oi.operatorStackyWinchAxis) == 0){
+			context.winchController.set(context.robot.oi.operator.getRawAxis(context.robot.oi.operatorStackyWinchAxis));
+			if(context.robot.oi.operator.getRawAxis(context.robot.oi.operatorStackyWinchAxis) == 0){
 				context.setState(new Holding());
 			}
 		}
@@ -101,7 +101,7 @@ public class Winchy extends StateSubsystem{
 		
 		@Override
 		public void execute() {
-			if(context.oi.operator.getRawAxis(context.oi.operatorStackyWinchAxis) > 0){
+			if(context.robot.oi.operator.getRawAxis(context.robot.oi.operatorStackyWinchAxis) > 0){
 				context.setState(new Moving());
 			}
 		}

@@ -58,9 +58,9 @@ public class Tilty extends StateSubsystem{
 
 		@Override
 		public void execute() {
-			if(context.oi.operatorTiltDown.get()){
+			if(context.robot.oi.operatorTiltDown.get()){
 				context.setState(new TiltDown());
-			} else if(context.oi.operatorTiltUp.get()){
+			} else if(context.robot.oi.operatorTiltUp.get()){
 				context.setState(new TiltUp());
 			}
 		}

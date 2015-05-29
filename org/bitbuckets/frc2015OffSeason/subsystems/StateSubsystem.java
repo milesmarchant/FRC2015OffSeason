@@ -1,6 +1,7 @@
 package org.bitbuckets.frc2015OffSeason.subsystems;
 
 import org.bitbuckets.frc2015OffSeason.OI;
+import org.bitbuckets.frc2015OffSeason.Robot;
 import org.bitbuckets.frc2015OffSeason.subsystems.state.DisabledState;
 import org.bitbuckets.frc2015OffSeason.subsystems.state.State;
 
@@ -12,7 +13,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public abstract class StateSubsystem extends Subsystem implements Runnable {
     
     private Thread t;
-    protected OI oi = null;
+    protected Robot robot = null;
     protected State currState;
     protected volatile boolean stopRequested = false;
     protected volatile boolean stopped = false;
@@ -42,8 +43,9 @@ public abstract class StateSubsystem extends Subsystem implements Runnable {
     	}
 	}
     
-    public final void setOI(OI oi){
-    	this.oi = oi;
+    //TODO actually use
+    public final void setRobotContext(Robot robotContext){
+    	this.robot = robotContext;
     }
     
     public final String getCurrentStateName(){
@@ -51,6 +53,7 @@ public abstract class StateSubsystem extends Subsystem implements Runnable {
     }
     
     public final void start(){
+    	//TODO break if the context is not properly set
     	stopRequested = false;
     	stopped = false;
     	if(t != null && t.isAlive() == false){

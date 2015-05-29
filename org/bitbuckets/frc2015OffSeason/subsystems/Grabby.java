@@ -76,11 +76,11 @@ public class Grabby extends StateSubsystem{
 		GrabberInputState currentInput;
 		
 		protected GrabberInputState getInput(){
-			if(context.oi.operatorGrabClose.get() == true && context.oi.operatorGrabOpen.get() == true){
+			if(context.robot.oi.operatorGrabClose.get() == true && context.robot.oi.operatorGrabOpen.get() == true){
 				return GrabberInputState.BOTH;
-			} else if(context.oi.operatorGrabClose.get() == true){
+			} else if(context.robot.oi.operatorGrabClose.get() == true){
 				return GrabberInputState.CLOSE;
-			} else if(context.oi.operatorGrabOpen.get() == true){
+			} else if(context.robot.oi.operatorGrabOpen.get() == true){
 				return GrabberInputState.OPEN;
 			} else{
 				return GrabberInputState.NEITHER;
