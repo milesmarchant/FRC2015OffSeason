@@ -44,8 +44,8 @@ public class Grabby extends StateSubsystem{
      *
      * @return If the current draw from the grab motor port is greater than the threshold.
      */
-	public boolean getCurrentLimit(){        
-		return true;
+	public boolean isCurrentMaxed(){        
+		return false;
 		//TODO uncomment once the pdp is there
 //        return Robot.pdp.getCurrent(RobotMap.GRABBER_MOTOR_CHANNEL) >= RobotConstants.GRABBY_CURRRENT_MAX;
 	}
@@ -93,11 +93,10 @@ public class Grabby extends StateSubsystem{
 			context.grabberController.set(RobotConstants.GRAB_SPEED);
 		}
 
-		//TODO check for current limit
 		@Override
 		public void execute() {
 			currentInput = getInput();
-			if(currentInput == GrabberInputState.BOTH || currentInput == GrabberInputState.NEITHER){
+			if(currentInput == GrabberInputState.BOTH || currentInput == GrabberInputState.NEITHER || context.isCurrentMaxed()){
 				context.setState(new GrabberStop());
 			} else if(currentInput == GrabberInputState.OPEN){
 				context.setState(new GrabberOpen());
@@ -121,11 +120,10 @@ public class Grabby extends StateSubsystem{
 			context.grabberController.set(-RobotConstants.GRAB_SPEED);
 		}
 		
-		//TODO check for open
 		@Override
 		public void execute() {
 			currentInput = getInput();
-			if(currentInput == GrabberInputState.BOTH || currentInput == GrabberInputState.NEITHER){
+			if(currentInput == GrabberInputState.BOTH || currentInput == GrabberInputState.NEITHER || context.getOpen()){
 				context.setState(new GrabberStop());
 			} else if(currentInput == GrabberInputState.CLOSE){
 				context.setState(new GrabberClose());
@@ -153,9 +151,9 @@ public class Grabby extends StateSubsystem{
 		@Override
 		public void execute() {
 			currentInput = getInput();
-			if(currentInput == GrabberInputState.OPEN){
+			if(currentInput == GrabberInputState.OPEN && context.getOpen() == false){
 				context.setState(new GrabberOpen());
-			} else if(currentInput == GrabberInputState.CLOSE){
+			} else if(currentInput == GrabberInputState.CLOSE && context.isCurrentMaxed() == false){
 				context.setState(new GrabberClose());
 			}
 		}
