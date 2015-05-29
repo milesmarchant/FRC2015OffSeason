@@ -1,5 +1,6 @@
 package org.bitbuckets.frc2015OffSeason.subsystems;
 
+import org.bitbuckets.frc2015OffSeason.OI;
 import org.bitbuckets.frc2015OffSeason.subsystems.state.DisabledState;
 import org.bitbuckets.frc2015OffSeason.subsystems.state.State;
 
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public abstract class StateSubsystem extends Subsystem implements Runnable {
     
     private Thread t;
+    protected OI oi = null;
     protected State currState;
     protected volatile boolean stopRequested = false;
     protected volatile boolean stopped = false;
@@ -27,7 +29,7 @@ public abstract class StateSubsystem extends Subsystem implements Runnable {
     	setupTriggers();
     }
     
-    public void setState(State newState) {
+    public final void setState(State newState) {
     	if(currState.checkNewState(newState)){
     		currState.leave();
     		newState.setContext(this);
@@ -35,6 +37,10 @@ public abstract class StateSubsystem extends Subsystem implements Runnable {
     		currState.enter();
     	}
 	}
+    
+    public final void setOI(OI oi){
+    	this.oi = oi;
+    }
     
     public final String getCurrentStateName(){
     	return currState.getName();
