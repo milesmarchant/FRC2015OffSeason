@@ -80,6 +80,8 @@ public class OI {
     
 
     //Stacky
+    public int operatorStackyWinchAxis = 5;
+    public Button operatorAutoMode = new JoystickButton(operator, 1);
     public Button operatorToteUp = new JoystickButton(operator, 2);//JoystickDirButton(operator, Direction.UP, 0, 1);
     public Button operatorToteUpBlind = new JoystickDirButton(operator, Direction.UP, 0, 1);
     public Button operatorToteDown = new JoystickDirButton(operator, Direction.DOWN, 0, 1);
