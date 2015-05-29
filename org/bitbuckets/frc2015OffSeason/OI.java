@@ -77,7 +77,7 @@ public class OI {
     public TwoWayButton operatorGrabClose = new TwoWayButton(operator, 6);
     
     //Winchy
-    
+    public int winchAxis = 3; //?
 
     //Stacky
     public int operatorStackyWinchAxis = 5;
