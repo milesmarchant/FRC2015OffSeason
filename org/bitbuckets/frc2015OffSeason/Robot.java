@@ -5,7 +5,9 @@ import org.bitbuckets.frc2015OffSeason.subsystems.Grabby;
 import org.bitbuckets.frc2015OffSeason.subsystems.Tilty;
 import org.bitbuckets.frc2015OffSeason.subsystems.Winchy;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -24,6 +26,9 @@ public class Robot extends IterativeRobot {
 	public Grabby grabby;
 	public Winchy winchy;
 	
+	public PowerDistributionPanel pdp;
+	private Compressor compressor;
+	
     Command autonomousCommand;
 
     /**
@@ -36,6 +41,10 @@ public class Robot extends IterativeRobot {
 		tilty = new Tilty("Tilty", 50);
 		grabby = new Grabby("Grabby", 30);
 		winchy = new Winchy("Winchy", 20);
+		
+		pdp = new PowerDistributionPanel();
+		compressor = new Compressor(0);
+		compressor.setClosedLoopControl(true);
 
 		//FIXME these need to be moved
 		tilty.start();
