@@ -59,7 +59,29 @@ public class Grabby extends StateSubsystem{
 		return open.get();
 	}
 	
-	public static class GrabberClose extends State<Grabby>{
+	public static abstract class GrabberState extends State<Grabby>{
+		
+		protected enum GrabberInputState{
+			NEITHER, CLOSE, OPEN, BOTH;
+		}
+		
+		GrabberInputState currentInput;
+		
+		protected GrabberInputState getInput(){
+			if(context.oi.operatorGrabClose.get() == true && context.oi.operatorGrabOpen.get() == true){
+				return GrabberInputState.BOTH;
+			} else if(context.oi.operatorGrabClose.get() == true){
+				return GrabberInputState.CLOSE;
+			} else if(context.oi.operatorGrabOpen.get() == true){
+				return GrabberInputState.OPEN;
+			} else{
+				return GrabberInputState.NEITHER;
+			}
+		}
+		
+	}
+	
+	public static class GrabberClose extends GrabberState{
 		
 		
 		public GrabberClose(){
@@ -74,6 +96,12 @@ public class Grabby extends StateSubsystem{
 		//TODO check for current limit
 		@Override
 		public void execute() {
+			currentInput = getInput();
+			if(currentInput == GrabberInputState.BOTH || currentInput == GrabberInputState.NEITHER){
+				context.setState(new GrabberStop());
+			} else if(currentInput == GrabberInputState.OPEN){
+				context.setState(new GrabberOpen());
+			}
 		}
 
 		@Override
@@ -82,7 +110,7 @@ public class Grabby extends StateSubsystem{
 		
 	}
 	
-	public static class GrabberOpen extends State<Grabby>{
+	public static class GrabberOpen extends GrabberState{
 		
 		public GrabberOpen(){
 			name = "GrabberOpen";
@@ -96,6 +124,12 @@ public class Grabby extends StateSubsystem{
 		//TODO check for open
 		@Override
 		public void execute() {
+			currentInput = getInput();
+			if(currentInput == GrabberInputState.BOTH || currentInput == GrabberInputState.NEITHER){
+				context.setState(new GrabberStop());
+			} else if(currentInput == GrabberInputState.CLOSE){
+				context.setState(new GrabberClose());
+			}
 		}
 
 		@Override
@@ -105,9 +139,9 @@ public class Grabby extends StateSubsystem{
 		
 	}
 	
-	public static class GrabbyStop extends State<Grabby>{
+	public static class GrabberStop extends GrabberState{
 		
-		public GrabbyStop(){
+		public GrabberStop(){
 			name = "GrabberOpen";
 		}
 		
@@ -118,6 +152,12 @@ public class Grabby extends StateSubsystem{
 		
 		@Override
 		public void execute() {
+			currentInput = getInput();
+			if(currentInput == GrabberInputState.OPEN){
+				context.setState(new GrabberOpen());
+			} else if(currentInput == GrabberInputState.CLOSE){
+				context.setState(new GrabberClose());
+			}
 		}
 
 		@Override

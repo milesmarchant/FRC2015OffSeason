@@ -46,9 +46,6 @@ public class Robot extends IterativeRobot {
 		grabby.start();
 		winchy.start();
 		
-		oi.operatorGrabClose.setAction(new StateSetter(grabby, new Grabby.GrabberClose()), new StateSetter(grabby, new Grabby.GrabbyStop()));
-		oi.operatorGrabOpen.setAction(new StateSetter(grabby, new Grabby.GrabberOpen()), new StateSetter(grabby, new Grabby.GrabbyStop()));
-
 		oi.operatorTiltUp.whenActive(new StateSetter(tilty, new Tilty.Tilt(true)));
 		oi.operatorTiltDown.whenActive(new StateSetter(tilty, new Tilty.Tilt(false)));
 		
