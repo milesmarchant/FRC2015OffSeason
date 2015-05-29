@@ -3,10 +3,10 @@ package org.bitbuckets.frc2015OffSeason.subsystems;
 import org.bitbuckets.frc2015OffSeason.RobotConstants;
 import org.bitbuckets.frc2015OffSeason.RobotMap;
 import org.bitbuckets.frc2015OffSeason.subsystems.state.State;
-import org.bitbuckets.frc2015OffSeason.triggers.SubsystemTrigger;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.ControlMode;
+import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Stacky extends StateSubsystem{
@@ -70,8 +70,10 @@ public class Stacky extends StateSubsystem{
 				context.setState(new MoveDownOne());
 			} else if(context.oi.operatorToteDownAll.get()){
 				context.setState(new MoveDownAll());
+			} else if(context.oi.operator.getRawAxis(context.oi.operatorStackyWinchAxis) != 0){
+				context.setState(new MoveManual());
 			}
-			//TODO check for axis values
+			
 		}
 
 		@Override
@@ -103,8 +105,9 @@ public class Stacky extends StateSubsystem{
 				context.setState(new MoveDownOne());
 			} else if(context.oi.operatorToteDownAll.get()){
 				context.setState(new MoveDownAll());
+			} else if(context.oi.operator.getRawAxis(context.oi.operatorStackyWinchAxis) != 0){
+				context.setState(new MoveManual());
 			}
-			//TODO check for axis values
 		}
 
 		@Override
@@ -200,6 +203,8 @@ public class Stacky extends StateSubsystem{
 				context.setState(new MoveDownAll());
 			} else if(context.oi.operatorAutoMode.get() && context.getBumpers()){
 				context.setState(new MoveUpOne());
+			} else if(context.oi.operator.getRawAxis(context.oi.operatorStackyWinchAxis) == 0){
+				context.setState(new Holding());
 			}
 		}
 
@@ -220,8 +225,21 @@ public class Stacky extends StateSubsystem{
 
 		@Override
 		public void execute() {
-			//TODO check reed switch
+			
+			Counter aboveCounter = new Counter(context.reedAbove);
+			Counter belowCounter = new Counter(context.reedBelow);
+			
+			if(aboveCounter.get() > 0 || belowCounter.get() > 0){
+				aboveCounter.reset();
+				belowCounter.reset();
+				if(System.currentTimeMillis() - timeInit > RobotConstants.CARRAIGE_SAG_COMPENSATION_TIME){
+					context.winch.set(0);
+					context.setState(new Holding());
+				}
+			}
+			
 			if((System.currentTimeMillis() - timeInit) > RobotConstants.STACK_MOVE_ONE_TIMEOUT){
+				context.winch.set(0);
 				context.setState(new Holding());
 			}
 		}
@@ -254,6 +272,7 @@ public class Stacky extends StateSubsystem{
 		public void execute() {
 			//TODO check which limit switch it should be
 			if(context.winch.isRevLimitSwitchClosed() || (System.currentTimeMillis() - timeInit) > RobotConstants.STACK_DOWN_ALL_TIMEOUT){
+				context.winch.set(0);
 				context.setState(new Holding());
 			}
 		}
