@@ -2,13 +2,11 @@ package org.bitbuckets.frc2015OffSeason.subsystems;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 import org.bitbuckets.frc2015OffSeason.RobotConstants;
 import org.bitbuckets.frc2015OffSeason.RobotMap;
 import org.bitbuckets.frc2015OffSeason.commands.DynamicCommand;
 import org.bitbuckets.frc2015OffSeason.subsystems.state.State;
-import org.bitbuckets.frc2015OffSeason.subsystems.state.ValueTracker;
 import org.bitbuckets.frc2015OffSeason.triggers.SubsystemTrigger;
 
 import edu.wpi.first.wpilibj.CANTalon;
@@ -64,21 +62,10 @@ public class Winchy extends StateSubsystem{
 		}
 	}
 	
-	private Double getSpeed(){
-		return this.speed.poll();
-	}
-	
 	public static class Moving extends State<Winchy>{
-		
-		ValueTracker<Double> speed;
-		
+				
 		public Moving(){
 			name = "Moving";
-		}
-		
-		@Override
-		protected void createValueTrackers(){
-			speed = new ValueTracker<Double>(context::getSpeed);
 		}
 		
 		@Override
@@ -88,7 +75,10 @@ public class Winchy extends StateSubsystem{
 		
 		@Override
 		public void execute() {
-			context.winchController.set(speed.getValue());
+			context.winchController.set(context.oi.operator.getRawAxis(context.oi.operatorStackyWinchAxis));
+			if(context.oi.operator.getRawAxis(context.oi.operatorStackyWinchAxis) == 0){
+				context.setState(new Holding());
+			}
 		}
 
 		@Override
@@ -111,7 +101,9 @@ public class Winchy extends StateSubsystem{
 		
 		@Override
 		public void execute() {
-
+			if(context.oi.operator.getRawAxis(context.oi.operatorStackyWinchAxis) > 0){
+				context.setState(new Moving());
+			}
 		}
 
 		@Override
