@@ -37,15 +37,6 @@ public class Tilty extends StateSubsystem{
 	}
 	
     /**
-     * Sets the position of the stacky subsystem.
-     *
-     * @param up Whether to set the tilty as up or not.
-     */
-    public void raiseTilty(boolean up) {
-        upTilt = !up;
-    }
-	
-    /**
      * Returns a boolean indicating the intended position of the stacky elevator. The pneumatic cylinder takes time to operate,
      *  however this boolean changes instantly, so do not use to test the absolute, current position.
      * 
@@ -55,23 +46,38 @@ public class Tilty extends StateSubsystem{
         return upTilt;
     }
     
-    public static class Tilt extends State<Tilty>{
-    	
-    	private boolean up;
-    	
-    	public Tilt(boolean up){
-    		this.up = up;
-    		name = "Tilt";
-    	}
+    public static class TiltUp extends State<Tilty>{
     	
     	@Override
     	public void enter(){
+			context.tiltSolenoid.set(DoubleSolenoid.Value.kReverse);
     	}
 
 		@Override
 		public void execute() {
-			context.tiltSolenoid.set(up ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
-			context.setState(new DisabledState());
+			if(context.oi.operatorTiltDown.get()){
+				context.setState(new TiltDown());
+			}
+		}
+
+		@Override
+		public void leave() {
+		}
+    	
+    }
+    
+    public static class TiltDown extends State<Tilty>{
+    	
+    	@Override
+    	public void enter(){
+			context.tiltSolenoid.set(DoubleSolenoid.Value.kForward);
+    	}
+
+		@Override
+		public void execute() {
+			if(context.oi.operatorTiltUp.get()){
+				context.setState(new TiltUp());
+			}
 		}
 
 		@Override

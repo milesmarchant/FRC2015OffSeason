@@ -46,9 +46,6 @@ public class Robot extends IterativeRobot {
 		grabby.start();
 		winchy.start();
 		
-		oi.operatorTiltUp.whenActive(new StateSetter(tilty, new Tilty.Tilt(true)));
-		oi.operatorTiltDown.whenActive(new StateSetter(tilty, new Tilty.Tilt(false)));
-		
 		winchAxisSender = new Thread(new AxisSender(oi.operator::getRawAxis, d -> winchy.setSpeed(d, 100), 10, 3));
 		winchAxisSender.start();
 		
