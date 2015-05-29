@@ -2,6 +2,7 @@ package org.bitbuckets.frc2015OffSeason.subsystems;
 
 import org.bitbuckets.frc2015OffSeason.RobotConstants;
 import org.bitbuckets.frc2015OffSeason.RobotMap;
+import org.bitbuckets.frc2015OffSeason.subsystems.Stacky.Holding;
 import org.bitbuckets.frc2015OffSeason.subsystems.state.State;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -36,6 +37,13 @@ public class Grabby extends StateSubsystem{
 	@Override
 	protected void initDefaultCommand() {
 		
+	}
+	
+	@Override
+	protected void setDefaultStates(){
+		defaultTeleopState = new GrabberStop();
+		defaultAutoState = new GrabberStop();
+		defaultTestState = new GrabberStop();
 	}
 	
     /**

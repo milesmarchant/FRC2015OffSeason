@@ -48,7 +48,13 @@ public class Winchy extends StateSubsystem{
 	@Override
 	protected void initDefaultCommand() {
 	}
-	
+
+	@Override
+	protected void setDefaultStates(){
+		defaultTeleopState = new Holding();
+		defaultAutoState = new Holding();
+		defaultTestState = new Holding();
+	}
 	
 	public void setSpeed(Double speed, long timeout){
 		try {
@@ -113,7 +119,4 @@ public class Winchy extends StateSubsystem{
 		}
 		
 	}
-
-
-
 }

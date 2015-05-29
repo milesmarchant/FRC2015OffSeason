@@ -1,6 +1,7 @@
 package org.bitbuckets.frc2015OffSeason.subsystems;
 
 import org.bitbuckets.frc2015OffSeason.RobotMap;
+import org.bitbuckets.frc2015OffSeason.subsystems.Winchy.Holding;
 import org.bitbuckets.frc2015OffSeason.subsystems.state.DisabledState;
 import org.bitbuckets.frc2015OffSeason.subsystems.state.State;
 
@@ -24,16 +25,19 @@ public class Tilty extends StateSubsystem{
 	protected void setupTriggers() {
 	}
 	
-	
-	
-	
 	@Override
 	protected void interrupted() {		
 	}
 	
-	
 	@Override
 	protected void initDefaultCommand() {
+	}
+	
+	@Override
+	protected void setDefaultStates(){
+		defaultTeleopState = new WaitForInput();
+		defaultAutoState = new WaitForInput();
+		defaultTestState = new WaitForInput();
 	}
 	
     /**
@@ -46,6 +50,27 @@ public class Tilty extends StateSubsystem{
         return upTilt;
     }
     
+    public static class WaitForInput extends State<Tilty>{
+
+		@Override
+		public void enter() {
+		}
+
+		@Override
+		public void execute() {
+			if(context.oi.operatorTiltDown.get()){
+				context.setState(new TiltDown());
+			} else if(context.oi.operatorTiltUp.get()){
+				context.setState(new TiltUp());
+			}
+		}
+
+		@Override
+		public void leave() {
+		}
+    	
+    }
+    
     public static class TiltUp extends State<Tilty>{
     	
     	@Override
@@ -55,9 +80,7 @@ public class Tilty extends StateSubsystem{
 
 		@Override
 		public void execute() {
-			if(context.oi.operatorTiltDown.get()){
-				context.setState(new TiltDown());
-			}
+			context.setState(new WaitForInput());
 		}
 
 		@Override
@@ -75,9 +98,7 @@ public class Tilty extends StateSubsystem{
 
 		@Override
 		public void execute() {
-			if(context.oi.operatorTiltUp.get()){
-				context.setState(new TiltUp());
-			}
+			context.setState(new WaitForInput());
 		}
 
 		@Override

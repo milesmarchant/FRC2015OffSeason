@@ -1,7 +1,6 @@
 
 package org.bitbuckets.frc2015OffSeason;
 
-import org.bitbuckets.frc2015OffSeason.commands.StateSetter;
 import org.bitbuckets.frc2015OffSeason.subsystems.Grabby;
 import org.bitbuckets.frc2015OffSeason.subsystems.Tilty;
 import org.bitbuckets.frc2015OffSeason.subsystems.Winchy;

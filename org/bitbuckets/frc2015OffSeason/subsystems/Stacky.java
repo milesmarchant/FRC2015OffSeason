@@ -2,6 +2,7 @@ package org.bitbuckets.frc2015OffSeason.subsystems;
 
 import org.bitbuckets.frc2015OffSeason.RobotConstants;
 import org.bitbuckets.frc2015OffSeason.RobotMap;
+import org.bitbuckets.frc2015OffSeason.subsystems.Tilty.WaitForInput;
 import org.bitbuckets.frc2015OffSeason.subsystems.state.State;
 
 import edu.wpi.first.wpilibj.CANTalon;
@@ -44,6 +45,13 @@ public class Stacky extends StateSubsystem{
 
 	@Override
 	protected void initDefaultCommand() {
+	}
+	
+	@Override
+	protected void setDefaultStates(){
+		defaultTeleopState = new Holding();
+		defaultAutoState = new Holding();
+		defaultTestState = new Holding();
 	}
 	
 	public boolean getBumpers(){

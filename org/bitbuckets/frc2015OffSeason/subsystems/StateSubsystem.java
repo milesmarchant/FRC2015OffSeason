@@ -17,6 +17,9 @@ public abstract class StateSubsystem extends Subsystem implements Runnable {
     protected volatile boolean stopRequested = false;
     protected volatile boolean stopped = false;
     protected long iterationTime;
+    protected State<?> defaultTeleopState;
+    protected State<?> defaultAutoState;
+    protected State<?> defaultTestState;
     
     public StateSubsystem(String name, long iterationTime){
     	t = new Thread(this, name);
@@ -27,6 +30,7 @@ public abstract class StateSubsystem extends Subsystem implements Runnable {
     	}
     	setupComponents();
     	setupTriggers();
+    	setDefaultStates();
     }
     
     public final void setState(State newState) {
@@ -72,17 +76,28 @@ public abstract class StateSubsystem extends Subsystem implements Runnable {
     	}
     	stopped = true;
     }
-
-    protected abstract void setupComponents();
-    protected abstract void setupTriggers();
     
-    //TODO what's the inverse of init()?
-    
-    protected abstract void interrupted();
-    
-    protected void setDefaultState(){
+    public final void setDisabledState(){
     	setState(new DisabledState());
     }
     
+    public final void setTeleopState(){
+    	setState(defaultTeleopState);
+    }
+    
+    public final void setAutoState(){
+    	setState(defaultAutoState);
+    }
+    
+    public final void setTestState(){
+    	setState(defaultTestState);
+    }
+
+    protected abstract void setupComponents();
+    protected abstract void setupTriggers();
+        
+    protected abstract void interrupted();
+
+    protected abstract void setDefaultStates();
 }
 
