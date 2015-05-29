@@ -98,6 +98,10 @@ public class RobotConstants {
      * Timeout for the StackyDownAll command, in seconds.
      */
     public static final double STACK_DOWN_ALL_TIMEOUT = 5;
+    /**
+     * Reed switches will be ignored for this long, to compensate for a misaligned or sagging carriage
+     */
+    public static final long CARRAIGE_SAG_COMPENSATION_TIME = 100;
 
     
     ///////////////////////////////////////////////////////////////////////////////////
