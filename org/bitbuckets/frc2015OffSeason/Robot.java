@@ -1,6 +1,7 @@
 
 package org.bitbuckets.frc2015OffSeason;
 
+import org.bitbuckets.frc2015OffSeason.subsystems.Drivey;
 import org.bitbuckets.frc2015OffSeason.subsystems.Grabby;
 import org.bitbuckets.frc2015OffSeason.subsystems.Tilty;
 import org.bitbuckets.frc2015OffSeason.subsystems.Winchy;
@@ -25,6 +26,7 @@ public class Robot extends IterativeRobot {
 	public Tilty tilty;
 	public Grabby grabby;
 	public Winchy winchy;
+	public Drivey drivey;
 	
 	public PowerDistributionPanel pdp;
 	private Compressor compressor;
@@ -41,6 +43,7 @@ public class Robot extends IterativeRobot {
 		tilty = new Tilty("Tilty", 50);
 		grabby = new Grabby("Grabby", 30);
 		winchy = new Winchy("Winchy", 20);
+		drivey = new Drivey("Drivey", 10);
 		
 		pdp = new PowerDistributionPanel();
 		compressor = new Compressor(0);
@@ -50,6 +53,7 @@ public class Robot extends IterativeRobot {
 		tilty.start();
 		grabby.start();
 		winchy.start();
+		drivey.start();
 		
 		
     }
