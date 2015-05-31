@@ -1,6 +1,7 @@
 package org.bitbuckets.frc2015OffSeason.subsystems;
 
 import org.bitbuckets.frc2015OffSeason.RobotMap;
+import org.bitbuckets.frc2015OffSeason.subsystems.Winchy.Holding;
 import org.bitbuckets.frc2015OffSeason.subsystems.state.DisabledState;
 import org.bitbuckets.frc2015OffSeason.subsystems.state.State;
 
@@ -24,26 +25,20 @@ public class Tilty extends StateSubsystem{
 	protected void setupTriggers() {
 	}
 	
-	
-	
-	
 	@Override
 	protected void interrupted() {		
 	}
-	
 	
 	@Override
 	protected void initDefaultCommand() {
 	}
 	
-    /**
-     * Sets the position of the stacky subsystem.
-     *
-     * @param up Whether to set the tilty as up or not.
-     */
-    public void raiseTilty(boolean up) {
-        upTilt = !up;
-    }
+	@Override
+	protected void setDefaultStates(){
+		defaultTeleopState = new WaitForInput();
+		defaultAutoState = new WaitForInput();
+		defaultTestState = new WaitForInput();
+	}
 	
     /**
      * Returns a boolean indicating the intended position of the stacky elevator. The pneumatic cylinder takes time to operate,
@@ -55,23 +50,55 @@ public class Tilty extends StateSubsystem{
         return upTilt;
     }
     
-    public static class Tilt extends State<Tilty>{
+    public static class WaitForInput extends State<Tilty>{
+
+		@Override
+		public void enter() {
+		}
+
+		@Override
+		public void execute() {
+			if(context.robot.oi.operatorTiltDown.get()){
+				context.setState(new TiltDown());
+			} else if(context.robot.oi.operatorTiltUp.get()){
+				context.setState(new TiltUp());
+			}
+		}
+
+		@Override
+		public void leave() {
+		}
     	
-    	private boolean up;
-    	
-    	public Tilt(boolean up){
-    		this.up = up;
-    		name = "Tilt";
-    	}
+    }
+    
+    public static class TiltUp extends State<Tilty>{
     	
     	@Override
     	public void enter(){
+			context.tiltSolenoid.set(DoubleSolenoid.Value.kReverse);
     	}
 
 		@Override
 		public void execute() {
-			context.tiltSolenoid.set(up ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
-			context.setState(new DisabledState());
+			context.setState(new WaitForInput());
+		}
+
+		@Override
+		public void leave() {
+		}
+    	
+    }
+    
+    public static class TiltDown extends State<Tilty>{
+    	
+    	@Override
+    	public void enter(){
+			context.tiltSolenoid.set(DoubleSolenoid.Value.kForward);
+    	}
+
+		@Override
+		public void execute() {
+			context.setState(new WaitForInput());
 		}
 
 		@Override

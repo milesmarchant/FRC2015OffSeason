@@ -1,13 +1,12 @@
-package org.bitbuckets.frc2015OffSeason.subsystems.state;
+package org.bitbuckets.frc2015OffSeason.subsystems;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 import org.bitbuckets.frc2015OffSeason.RobotConstants;
 import org.bitbuckets.frc2015OffSeason.RobotMap;
 import org.bitbuckets.frc2015OffSeason.commands.DynamicCommand;
-import org.bitbuckets.frc2015OffSeason.subsystems.StateSubsystem;
+import org.bitbuckets.frc2015OffSeason.subsystems.state.State;
 import org.bitbuckets.frc2015OffSeason.triggers.SubsystemTrigger;
 
 import edu.wpi.first.wpilibj.CANTalon;
@@ -47,7 +46,13 @@ public class Winchy extends StateSubsystem{
 	@Override
 	protected void initDefaultCommand() {
 	}
-	
+
+	@Override
+	protected void setDefaultStates(){
+		defaultTeleopState = new Holding();
+		defaultAutoState = new Holding();
+		defaultTestState = new Holding();
+	}
 	
 	public void setSpeed(Double speed, long timeout){
 		try {
@@ -57,21 +62,10 @@ public class Winchy extends StateSubsystem{
 		}
 	}
 	
-	private Double getSpeed(){
-		return this.speed.poll();
-	}
-	
 	public static class Moving extends State<Winchy>{
-		
-		ValueTracker<Double> speed;
-		
+				
 		public Moving(){
 			name = "Moving";
-		}
-		
-		@Override
-		protected void createValueTrackers(){
-			speed = new ValueTracker<Double>(context::getSpeed);
 		}
 		
 		@Override
@@ -81,7 +75,10 @@ public class Winchy extends StateSubsystem{
 		
 		@Override
 		public void execute() {
-			context.winchController.set(speed.getValue());
+			context.winchController.set(context.robot.oi.operator.getRawAxis(context.robot.oi.operatorStackyWinchAxis));
+			if(context.robot.oi.operator.getRawAxis(context.robot.oi.operatorStackyWinchAxis) == 0){
+				context.setState(new Holding());
+			}
 		}
 
 		@Override
@@ -104,7 +101,9 @@ public class Winchy extends StateSubsystem{
 		
 		@Override
 		public void execute() {
-
+			if(context.robot.oi.operator.getRawAxis(context.robot.oi.operatorStackyWinchAxis) > 0){
+				context.setState(new Moving());
+			}
 		}
 
 		@Override
@@ -112,7 +111,4 @@ public class Winchy extends StateSubsystem{
 		}
 		
 	}
-
-
-
 }

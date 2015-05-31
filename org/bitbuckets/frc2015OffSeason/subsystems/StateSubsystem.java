@@ -1,5 +1,7 @@
 package org.bitbuckets.frc2015OffSeason.subsystems;
 
+import org.bitbuckets.frc2015OffSeason.OI;
+import org.bitbuckets.frc2015OffSeason.Robot;
 import org.bitbuckets.frc2015OffSeason.subsystems.state.DisabledState;
 import org.bitbuckets.frc2015OffSeason.subsystems.state.State;
 
@@ -11,10 +13,14 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public abstract class StateSubsystem extends Subsystem implements Runnable {
     
     private Thread t;
+    protected Robot robot = null;
     protected State currState;
     protected volatile boolean stopRequested = false;
     protected volatile boolean stopped = false;
     protected long iterationTime;
+    protected State<?> defaultTeleopState;
+    protected State<?> defaultAutoState;
+    protected State<?> defaultTestState;
     
     public StateSubsystem(String name, long iterationTime){
     	t = new Thread(this, name);
@@ -25,9 +31,10 @@ public abstract class StateSubsystem extends Subsystem implements Runnable {
     	}
     	setupComponents();
     	setupTriggers();
+    	setDefaultStates();
     }
     
-    public void setState(State newState) {
+    public final void setState(State newState) {
     	if(currState.checkNewState(newState)){
     		currState.leave();
     		newState.setContext(this);
@@ -36,11 +43,17 @@ public abstract class StateSubsystem extends Subsystem implements Runnable {
     	}
 	}
     
+    //TODO actually use
+    public final void setRobotContext(Robot robotContext){
+    	this.robot = robotContext;
+    }
+    
     public final String getCurrentStateName(){
     	return currState.getName();
     }
     
     public final void start(){
+    	//TODO break if the context is not properly set
     	stopRequested = false;
     	stopped = false;
     	if(t != null && t.isAlive() == false){
@@ -66,17 +79,28 @@ public abstract class StateSubsystem extends Subsystem implements Runnable {
     	}
     	stopped = true;
     }
-
-    protected abstract void setupComponents();
-    protected abstract void setupTriggers();
     
-    //TODO what's the inverse of init()?
-    
-    protected abstract void interrupted();
-    
-    protected void setDefaultState(){
+    public final void setDisabledState(){
     	setState(new DisabledState());
     }
     
+    public final void setTeleopState(){
+    	setState(defaultTeleopState);
+    }
+    
+    public final void setAutoState(){
+    	setState(defaultAutoState);
+    }
+    
+    public final void setTestState(){
+    	setState(defaultTestState);
+    }
+
+    protected abstract void setupComponents();
+    protected abstract void setupTriggers();
+        
+    protected abstract void interrupted();
+
+    protected abstract void setDefaultStates();
 }
 

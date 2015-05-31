@@ -1,11 +1,9 @@
 package org.bitbuckets.frc2015OffSeason.subsystems;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.TimeUnit;
-
+import org.bitbuckets.frc2015OffSeason.RobotConstants;
 import org.bitbuckets.frc2015OffSeason.RobotMap;
+import org.bitbuckets.frc2015OffSeason.subsystems.Stacky.Holding;
 import org.bitbuckets.frc2015OffSeason.subsystems.state.State;
-import org.bitbuckets.frc2015OffSeason.subsystems.state.ValueTracker;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Talon;
@@ -16,8 +14,6 @@ public class Grabby extends StateSubsystem{
 	
 	private DigitalInput open;
 	
-	private ArrayBlockingQueue<Double> speed = new ArrayBlockingQueue<Double>(1);
-
 	public Grabby(String name, long iterationTime) {
 		super(name, iterationTime);
 	}
@@ -43,14 +39,21 @@ public class Grabby extends StateSubsystem{
 		
 	}
 	
+	@Override
+	protected void setDefaultStates(){
+		defaultTeleopState = new GrabberStop();
+		defaultAutoState = new GrabberStop();
+		defaultTestState = new GrabberStop();
+	}
+	
     /**
      * Gets whether the grabber is closed according to the current being drawn by the motor
      * NYI
      *
      * @return If the current draw from the grab motor port is greater than the threshold.
      */
-	public boolean getCurrentLimit(){        
-		return true;
+	public boolean isCurrentMaxed(){        
+		return false;
 		//TODO uncomment once the pdp is there
 //        return Robot.pdp.getCurrent(RobotMap.GRABBER_MOTOR_CHANNEL) >= RobotConstants.GRABBY_CURRRENT_MAX;
 	}
@@ -64,46 +67,109 @@ public class Grabby extends StateSubsystem{
 		return open.get();
 	}
 	
-	public void setSpeed(Double speed, long timeout){
-		try {
-			this.speed.offer(speed, timeout, TimeUnit.MILLISECONDS);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private Double getSpeed(){
-		return this.speed.poll();
-	}
-	
-	public static class Grab extends State<Grabby>{
+	public static abstract class GrabberState extends State<Grabby>{
 		
-		ValueTracker<Double> speed;
-		
-		public Grab(){
-			name = "Grab";
+		protected enum GrabberInputState{
+			NEITHER, CLOSE, OPEN, BOTH;
 		}
 		
-		@Override
-		protected void createValueTrackers(){
-			speed = new ValueTracker<Double>(context::getSpeed);
+		GrabberInputState currentInput;
+		
+		protected GrabberInputState getInput(){
+			if(context.robot.oi.operatorGrabClose.get() == true && context.robot.oi.operatorGrabOpen.get() == true){
+				return GrabberInputState.BOTH;
+			} else if(context.robot.oi.operatorGrabClose.get() == true){
+				return GrabberInputState.CLOSE;
+			} else if(context.robot.oi.operatorGrabOpen.get() == true){
+				return GrabberInputState.OPEN;
+			} else{
+				return GrabberInputState.NEITHER;
+			}
+		}
+		
+	}
+	
+	public static class GrabberClose extends GrabberState{
+		
+		
+		public GrabberClose(){
+			name = "GrabberClose";
 		}
 		
 		@Override
 		public void enter() {
+			context.grabberController.set(RobotConstants.GRAB_SPEED);
 		}
 
 		@Override
 		public void execute() {
-			context.grabberController.set(speed.getValue());
+			currentInput = getInput();
+			if(currentInput == GrabberInputState.BOTH || currentInput == GrabberInputState.NEITHER || context.isCurrentMaxed()){
+				context.setState(new GrabberStop());
+			} else if(currentInput == GrabberInputState.OPEN){
+				context.setState(new GrabberOpen());
+			}
 		}
-
-
 
 		@Override
 		public void leave() {
 		}
 		
+	}
+	
+	public static class GrabberOpen extends GrabberState{
+		
+		public GrabberOpen(){
+			name = "GrabberOpen";
+		}
+
+		@Override
+		public void enter() {
+			context.grabberController.set(-RobotConstants.GRAB_SPEED);
+		}
+		
+		@Override
+		public void execute() {
+			currentInput = getInput();
+			if(currentInput == GrabberInputState.BOTH || currentInput == GrabberInputState.NEITHER || context.getOpen()){
+				context.setState(new GrabberStop());
+			} else if(currentInput == GrabberInputState.CLOSE){
+				context.setState(new GrabberClose());
+			}
+		}
+
+		@Override
+		public void leave() {
+			
+		}
+		
+	}
+	
+	public static class GrabberStop extends GrabberState{
+		
+		public GrabberStop(){
+			name = "GrabberOpen";
+		}
+		
+		@Override
+		public void enter(){
+			context.grabberController.set(0);
+		}
+		
+		@Override
+		public void execute() {
+			currentInput = getInput();
+			if(currentInput == GrabberInputState.OPEN && context.getOpen() == false){
+				context.setState(new GrabberOpen());
+			} else if(currentInput == GrabberInputState.CLOSE && context.isCurrentMaxed() == false){
+				context.setState(new GrabberClose());
+			}
+		}
+
+		@Override
+		public void leave() {
+			
+		}
 	}
 
 
